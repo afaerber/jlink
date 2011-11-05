@@ -80,7 +80,7 @@ static int receive_reply(libusb_device_handle *handle,
     }
     printf("\n");
 
-    if (*transferred < length) {
+    if (*transferred != length) {
         fprintf(stderr, "%s: received unexpected amount: %d (expected %d)\n", __func__, *transferred, length);
         return -2;
     }
