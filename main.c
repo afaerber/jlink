@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <libusb-1.0/libusb.h>
 #include "rx.h"
+#include "jlink.h"
 
 static libusb_device_handle *jlink_open(libusb_context *usb_context)
 {
@@ -46,6 +47,12 @@ static void jlink_close(libusb_device_handle *handle)
 
 static void test(libusb_device_handle *handle)
 {
+    char* version;
+    int ret = jlink_get_version(handle, &version);
+    if (ret == 0) {
+        printf("J-Link version: %s\n", version);
+        free(version);
+    }
 }
 
 static void connect(libusb_context *usb_context)

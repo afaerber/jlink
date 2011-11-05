@@ -9,8 +9,8 @@ DGFLAGS = -MMD -MP -MT $@
 
 -include jlink-test.d
 
-jlink-test: main.c
-	$(CC) -o $@ $(CPPFLAGS) $(DGFLAGS) $(CFLAGS) main.c $(LDFLAGS) -lusb-1.0
+jlink-test: main.c jlink.c
+	$(CC) -o $@ $(CPPFLAGS) $(DGFLAGS) $(CFLAGS) main.c jlink.c $(LDFLAGS) -lusb-1.0
 
 test: jlink-test
 	./jlink-test
