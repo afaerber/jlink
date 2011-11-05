@@ -6,6 +6,7 @@
  * Licensed under the GNU GPL version 2 or (at your option) any later version.
  */
 
+#include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <libusb-1.0/libusb.h>
@@ -52,6 +53,11 @@ static void test(libusb_device_handle *handle)
     if (ret == 0) {
         printf("J-Link version: %s\n", version);
         free(version);
+    }
+    uint32_t caps;
+    ret = jlink_get_caps(handle, &caps);
+    if (ret == 0) {
+        printf("Caps: %08" PRIx32 "\n", caps);
     }
 }
 

@@ -24,8 +24,14 @@ static inline uint16_t u16(uint16_t x)
     return x;
 }
 
+static inline uint32_t u32(uint32_t x)
+{
+    return x;
+}
+
 
 int jlink_get_version(libusb_device_handle *handle, char **str);
+int jlink_get_caps(libusb_device_handle *handle, uint32_t *caps);
 
 
 #endif

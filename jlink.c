@@ -20,6 +20,7 @@
 // RM08001 5.2 Protocol commands
 enum {
     EMU_CMD_VERSION = 0x01,
+    EMU_CMD_GET_CAPS = 0xE8,
 };
 
 
@@ -107,5 +108,20 @@ int jlink_get_version(libusb_device_handle *handle, char **version)
         return ret;
     }
     (*version)[len] = '\0';
+    return 0;
+}
+
+int jlink_get_caps(libusb_device_handle *handle, uint32_t *caps)
+{
+    uint8_t buf[1];
+    buf[0] = EMU_CMD_GET_CAPS;
+    int ret = send_command(handle, buf, 1);
+    if (ret != 0)
+        return ret;
+    int received;
+    ret = receive_reply(handle, (uint8_t *)caps, 4, &received);
+    if (ret != 0)
+        return ret;
+    *caps = u32(*caps);
     return 0;
 }
