@@ -59,8 +59,22 @@ static int send_command(libusb_device_handle *handle,
 static int receive_reply(libusb_device_handle *handle,
                          uint8_t *buffer, int length, int *transferred)
 {
-    uint8_t endpoint = ENDPOINT_IN;
     int ret;
+    if (length > 0 && (length % 64) == 0) {
+        // Avoid IN transactions with multiples of 64 bytes
+        // Cf. RM08001 4.3 Using USBLib
+        printf("Detected IN transaction with multiple of 64 bytes! Splitting.\n");
+        ret = receive_reply(handle, buffer, length - 1, transferred);
+        if (ret != 0)
+            return ret;
+        ret = receive_reply(handle, buffer + length - 1, 1, transferred);
+        if (ret != 0)
+            return ret;
+        *transferred = length;
+        return 0;
+    }
+
+    uint8_t endpoint = ENDPOINT_IN;
     int try = 0;
     do {
         ret = libusb_bulk_transfer(handle, endpoint, buffer, length,
