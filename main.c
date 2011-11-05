@@ -54,10 +54,17 @@ static void test(libusb_device_handle *handle)
         printf("J-Link version: %s\n", version);
         free(version);
     }
-    uint32_t caps;
+    uint32_t caps = 0;
     ret = jlink_get_caps(handle, &caps);
     if (ret == 0) {
         printf("Caps: %08" PRIx32 "\n", caps);
+    }
+    if (caps & EMU_CAP_GET_HW_VERSION) {
+        uint32_t hw_version;
+        ret = jlink_get_hw_version(handle, &hw_version);
+        if (ret == 0) {
+            printf("J-Link hardware version: %" PRIu32 "\n", hw_version);
+        }
     }
 }
 

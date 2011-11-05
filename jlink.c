@@ -21,6 +21,7 @@
 enum {
     EMU_CMD_VERSION = 0x01,
     EMU_CMD_GET_CAPS = 0xE8,
+    EMU_CMD_GET_HW_VERSION = 0xF0,
 };
 
 
@@ -137,5 +138,20 @@ int jlink_get_caps(libusb_device_handle *handle, uint32_t *caps)
     if (ret != 0)
         return ret;
     *caps = u32(*caps);
+    return 0;
+}
+
+int jlink_get_hw_version(libusb_device_handle *handle, uint32_t *version)
+{
+    uint8_t buf[1];
+    buf[0] = EMU_CMD_GET_HW_VERSION;
+    int ret = send_command(handle, buf, 1);
+    if (ret != 0)
+        return ret;
+    int received;
+    ret = receive_reply(handle, (uint8_t *)version, 4, &received);
+    if (ret != 0)
+        return ret;
+    *version = u32(*version);
     return 0;
 }
